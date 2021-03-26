@@ -33,6 +33,9 @@ defmodule StrictlySpeaking.Ua do
       iex> StrictlySpeaking.Ua.say(17)
       "сімнадцять"
 
+      iex> StrictlySpeaking.Ua.say(23)
+      "двадцять три"
+
       iex> StrictlySpeaking.Ua.say(117)
       "сто сімнадцять"
 
@@ -63,7 +66,7 @@ defmodule StrictlySpeaking.Ua do
         {_, 0, 0, 0} -> << >>
         {0, 0, 0, s} -> << elem(sex, s - 1)::binary >>
         {0, 0, 1, s} -> << elem(@teens, s)::binary >>
-        {0, 0, t, s} -> << elem(@tens, t - 1)::binary, ?\s, elem(sex, s - 1)::binary >>
+        {0, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(sex, s - 1)::binary >>
 
         {0, h, 0, 0} -> << elem(@hundreds, h - 1)::binary >>
         {0, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s - 1)::binary >>
