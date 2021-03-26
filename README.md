@@ -1,5 +1,7 @@
 # StrictlySpeaking
 
+A library to pronounce numbers. More info soon!
+
 **TODO: Add description**
 
 ## Installation
