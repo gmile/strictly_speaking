@@ -26,6 +26,7 @@ defmodule StrictlySpeaking.Ua do
   Accepts an integer. Returns a string containing human-readable representation of given number.
 
   ## Examples
+
       iex> StrictlySpeaking.Ua.say(7)
       "сім"
 
