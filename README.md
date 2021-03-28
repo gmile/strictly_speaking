@@ -12,7 +12,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:strictly_speaking, "~> 0.1.0"}
+    {:strictly_speaking, "~> 0.1"}
   ]
 end
 ```
