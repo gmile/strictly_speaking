@@ -5,14 +5,8 @@ defmodule StrictlySpeaking.Test do
 
   describe "say/2" do
     test "raises on non-integer number" do
-      assert_raise ArgumentError, "Number must be an integer greater than zero. Found: 1.3", fn ->
+      assert_raise ArgumentError, "Number must be an integer. Found: 1.3", fn ->
         StrictlySpeaking.say(1.3, :ua)
-      end
-    end
-
-    test "raises on non-positive integer" do
-      assert_raise ArgumentError, "Number must be an integer greater than zero. Found: -8", fn ->
-        StrictlySpeaking.say(-8, :ua)
       end
     end
 

@@ -13,7 +13,7 @@ defmodule StrictlySpeaking do
     * `:ua` - Ukrainian,
     * `:en` - English.
 
-  Raises an ArgumentError in case `number` is not a positive integer,
+  Raises an ArgumentError in case `number` is not an integer,
   or `language` is not among supported.
 
   ## Examples
@@ -24,9 +24,9 @@ defmodule StrictlySpeaking do
       iex> StrictlySpeaking.say(17, :en)
       "seventeen"
   """
-  def say(number, :en) when is_integer(number) and number > 0, do: StrictlySpeaking.En.say(number)
-  def say(number, :ua) when is_integer(number) and number > 0, do: StrictlySpeaking.Ua.say(number)
+  def say(number, :en) when is_integer(number), do: StrictlySpeaking.En.say(number)
+  def say(number, :ua) when is_integer(number), do: StrictlySpeaking.Ua.say(number)
 
-  def say(number, language) when is_integer(number) and number > 0, do: raise(ArgumentError, "Language '#{language}' is not implemented")
-  def say(number, _language), do: raise(ArgumentError, "Number must be an integer greater than zero. Found: #{number}")
+  def say(number, language) when is_integer(number), do: raise(ArgumentError, "Language '#{language}' is not implemented")
+  def say(number, _language), do: raise(ArgumentError, "Number must be an integer. Found: #{number}")
 end

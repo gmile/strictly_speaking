@@ -1,6 +1,6 @@
 defmodule StrictlySpeaking.Ua do
-  @singles_m {"один", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"}
-  @singles_f {"одна", "двi", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"}
+  @singles_m {"нуль", "один", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"}
+  @singles_f {"нуль", "одна", "двi", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"}
 
   @tens {"двадцять", "тридцять", "сорок", "п'ятдесят", "шістдесят", "сімдесят", "вісімдесят", "дев'яносто"}
   @teens {"десять", "одинадцять", "дванадцять", "тринадцять", "чотирнадцять", "п'ятнадцять", "шістнадцять", "сімнадцять", "вісімнадцять", "дев'ятндцять"}
@@ -26,6 +26,8 @@ defmodule StrictlySpeaking.Ua do
   Accepts an integer. Returns a string containing human-readable representation of given number.
 
   ## Examples
+      iex> StrictlySpeaking.Ua.say(0)
+      "нуль"
 
       iex> StrictlySpeaking.Ua.say(7)
       "сім"
@@ -54,7 +56,9 @@ defmodule StrictlySpeaking.Ua do
   """
   def say(number, acc \\ << >>, order \\ 0)
 
-  def say(number, acc, order) when number > 0 do
+  def say(0, _acc, _order), do: elem(@singles_m, 0)
+
+  def say(number, acc, order) do
     {div1000, rem1000} = {div(number, 1000), rem(number, 1000)}
     {div100, rem100} = {div(rem1000, 100), rem(rem1000, 100)}
     {div10, rem10} = {div(rem100, 10), rem(rem100, 10)}
@@ -64,23 +68,23 @@ defmodule StrictlySpeaking.Ua do
     result =
       case {order, div100, div10, rem10} do
         {_, 0, 0, 0} -> << >>
-        {0, 0, 0, s} -> << elem(sex, s - 1)::binary >>
+        {0, 0, 0, s} -> << elem(sex, s)::binary >>
         {0, 0, 1, s} -> << elem(@teens, s)::binary >>
-        {0, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(sex, s - 1)::binary >>
+        {0, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary >>
 
         {0, h, 0, 0} -> << elem(@hundreds, h - 1)::binary >>
-        {0, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s - 1)::binary >>
+        {0, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary >>
         {0, h, 1, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary >>
-        {0, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s - 1)::binary >>
+        {0, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary >>
 
-        {o, 0, 0, s} -> << elem(sex, s - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
+        {o, 0, 0, s} -> << elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
         {o, 0, 1, s} -> << elem(@teens, s)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, 0, t, s} -> << elem(@tens, t - 1)::binary, ?\s, elem(sex, s - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
+        {o, 0, t, s} -> << elem(@tens, t - 1)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
 
         {o, h, 0, 0} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
+        {o, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
         {o, h, 1, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
+        {o, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
       end
 
     case {result, div1000} do
