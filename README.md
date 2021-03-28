@@ -1,5 +1,7 @@
 # Strictly Speaking
 
+[![Build Status](https://github.com/gmile/strictly_speaking/actions/workflows/ci.yml/badge.svg)](https://github.com/gmile/strictly_speaking/actions/workflows/ci.yml)
+
 Turns numbers into words. Similar to [humanize](https://github.com/radar/humanize).
 
 ## Installation
