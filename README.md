@@ -1,13 +1,11 @@
-# StrictlySpeaking
+# Strictly Speaking
 
-A library to pronounce numbers. More info soon!
-
-**TODO: Add description**
+Turns numbers into words. Similar to [humanize](https://github.com/radar/humanize).
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `strictly_speaking` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `strictly_speaking` to your list of
+dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -17,7 +15,11 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/strictly_speaking](https://hexdocs.pm/strictly_speaking).
+Documentation can be found at https://hexdocs.pm/strictly_speaking.
 
+## Usage
+
+## License
+
+`strictly_speaking` is licensed under the MIT license, see the [LICENSE](LICENSE)
+file.
