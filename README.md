@@ -21,6 +21,14 @@ Documentation can be found at https://hexdocs.pm/strictly_speaking.
 
 ## Usage
 
+```elixir
+StrictlySpeaking.say(7, :ua)
+# => "сім"
+
+StrictlySpeaking.say(17, :en)
+# => "seventeen"
+```
+
 ## License
 
 `strictly_speaking` is licensed under the MIT license, see the [LICENSE](LICENSE)
