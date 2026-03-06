@@ -2,26 +2,53 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
   test:
-    runs-on: ubuntu-24.04
-    env:
-      MIX_ENV: test
+    name: Test
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: erlef/setup-beam@v1
+        id: beam
         with:
-          otp-version: 27
-          elixir-version: 1.18
+          elixir-version: 1.18.4
+          otp-version: 27.3
 
-      - name: Install Dependencies
-        run: mix deps.get --only test
+      - name: Restore dependencies cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
 
-      - run: mix deps.compile
-      - run: mix compile --warnings-as-errors
-      - run: mix test
+      - name: Restore PLT cache
+        uses: actions/cache@v4
+        with:
+          path: priv/plts
+          key: ${{ runner.os }}-plt-otp${{ steps.beam.outputs.otp-version }}-${{ hashFiles('**/mix.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-plt-otp${{ steps.beam.outputs.otp-version }}-${{ hashFiles('**/mix.lock') }}-
+            ${{ runner.os }}-plt-otp${{ steps.beam.outputs.otp-version }}-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile
+        run: mix compile --warnings-as-errors
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
+      - name: Run tests
+        run: mix test
+
+      - name: Run dialyzer
+        run: mix dialyzer

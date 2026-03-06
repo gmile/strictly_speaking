@@ -1,15 +1,29 @@
 defmodule StrictlySpeaking.MixProject do
   use Mix.Project
 
+  @version File.read!("VERSION") |> String.trim()
+
   def project do
     [
       app: :strictly_speaking,
-      version: "0.1.1",
-      elixir: "~> 1.11",
+      version: @version,
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
-      description: description()
+      description: "A library to pronounce numbers",
+      docs: docs(),
+      dialyzer: [
+        plt_local_path: "priv/plts",
+        plt_core_path: "priv/plts"
+      ]
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md", "CHANGELOG.md", "LICENSE"]
     ]
   end
 
@@ -21,19 +35,16 @@ defmodule StrictlySpeaking.MixProject do
 
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.40", only: :dev, runtime: false}
     ]
   end
 
   defp package do
     [
-      maintainers: ["Ievgen Pyrogov"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/gmile/strictly_speaking"}
+      links: %{"GitHub" => "https://github.com/gmile/strictly_speaking"},
+      files: ~w(lib .formatter.exs mix.exs VERSION README.md CHANGELOG.md LICENSE)
     ]
-  end
-
-  defp description do
-    "A library to pronounce numbers"
   end
 end
