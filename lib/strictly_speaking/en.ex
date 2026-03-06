@@ -1,10 +1,13 @@
 defmodule StrictlySpeaking.En do
+  # mix format: off
   @singles {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 
   @tens {"twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"}
-  @teens {"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"}
+  @teens {"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+          "eighteen", "nineteen"}
 
   @bigs {"thousand", "million", "billion", "trillion"}
+  # mix format: on
 
   @doc """
   Accepts an integer. Returns a string containing human-readable representation of given number.
@@ -74,7 +77,7 @@ defmodule StrictlySpeaking.En do
       "one hundred and twenty thousand"
 
   """
-  def say(number, acc \\ << >>, order \\ 0)
+  def say(number, acc \\ <<>>, order \\ 0)
 
   def say(0, _acc, _order), do: elem(@singles, 0)
 
@@ -85,35 +88,77 @@ defmodule StrictlySpeaking.En do
 
     result =
       case {order, div100, div10, rem10} do
-        {_, 0, 0, 0} -> << >>
-        {0, 0, 0, s} -> << elem(@singles, s)::binary >>
-        {0, 0, 1, s} -> << elem(@teens, s)::binary >>
-        {0, 0, t, 0} -> << elem(@tens, t - 2)::binary >>
-        {0, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary >>
+        {_, 0, 0, 0} ->
+          <<>>
 
-        {0, h, 0, 0} -> << elem(@singles, h)::binary, ?\s, "hundred" >>
-        {0, h, 0, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@singles, s)::binary >>
-        {0, h, 1, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@teens, s)::binary >>
-        {0, h, t, 0} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@tens, t - 2)::binary >>
-        {0, h, t, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary >>
+        {0, 0, 0, s} ->
+          <<elem(@singles, s)::binary>>
 
-        {o, 0, 0, s} -> << elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, 0, 1, s} -> << elem(@teens, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, 0, t, 0} -> << elem(@tens, t - 2)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
+        {0, 0, 1, s} ->
+          <<elem(@teens, s)::binary>>
 
-        {o, h, 0, 0} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, elem(@bigs, o - 1)::binary >>
-        {o, h, 0, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, h, 1, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@teens, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, h, t, 0} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@tens, t - 2)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, h, t, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
+        {0, 0, t, 0} ->
+          <<elem(@tens, t - 2)::binary>>
+
+        {0, 0, t, s} ->
+          <<elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary>>
+
+        {0, h, 0, 0} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred">>
+
+        {0, h, 0, s} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s,
+            elem(@singles, s)::binary>>
+
+        {0, h, 1, s} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@teens, s)::binary>>
+
+        {0, h, t, 0} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s,
+            elem(@tens, t - 2)::binary>>
+
+        {0, h, t, s} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s,
+            elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary>>
+
+        {o, 0, 0, s} ->
+          <<elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary>>
+
+        {o, 0, 1, s} ->
+          <<elem(@teens, s)::binary, ?\s, elem(@bigs, o - 1)::binary>>
+
+        {o, 0, t, 0} ->
+          <<elem(@tens, t - 2)::binary, ?\s, elem(@bigs, o - 1)::binary>>
+
+        {o, 0, t, s} ->
+          <<elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary, ?\s,
+            elem(@bigs, o - 1)::binary>>
+
+        {o, h, 0, 0} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, elem(@bigs, o - 1)::binary>>
+
+        {o, h, 0, s} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@singles, s)::binary,
+            ?\s, elem(@bigs, o - 1)::binary>>
+
+        {o, h, 1, s} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@teens, s)::binary,
+            ?\s, elem(@bigs, o - 1)::binary>>
+
+        {o, h, t, 0} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s,
+            elem(@tens, t - 2)::binary, ?\s, elem(@bigs, o - 1)::binary>>
+
+        {o, h, t, s} ->
+          <<elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s,
+            elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary, ?\s,
+            elem(@bigs, o - 1)::binary>>
       end
 
     case {result, div1000} do
-      {<< >>,  div1000} -> say(div1000, acc, order + 1)
-      {result,       0} -> << result::binary, acc::binary >>
-      {result, div1000} -> say(div1000, << ?\s, result::binary, acc::binary >>, order + 1)
+      {<<>>, div1000} -> say(div1000, acc, order + 1)
+      {result, 0} -> <<result::binary, acc::binary>>
+      {result, div1000} -> say(div1000, <<?\s, result::binary, acc::binary>>, order + 1)
     end
   end
 end
-

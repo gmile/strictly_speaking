@@ -1,10 +1,14 @@
 defmodule StrictlySpeaking.Ua do
+  # mix format: off
   @singles_m {"нуль", "один", "два", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"}
   @singles_f {"нуль", "одна", "двi", "три", "чотири", "п'ять", "шість", "сім", "вісім", "дев'ять"}
 
-  @tens {"двадцять", "тридцять", "сорок", "п'ятдесят", "шістдесят", "сімдесят", "вісімдесят", "дев'яносто"}
-  @teens {"десять", "одинадцять", "дванадцять", "тринадцять", "чотирнадцять", "п'ятнадцять", "шістнадцять", "сімнадцять", "вісімнадцять", "дев'ятнадцять"}
-  @hundreds {"сто", "двісті", "триста", "чотириста", "п'ятсот", "шістсот", "сімсот", "вісімсот", "дев'ятсот"}
+  @tens {"двадцять", "тридцять", "сорок", "п'ятдесят", "шістдесят", "сімдесят", "вісімдесят",
+         "дев'яносто"}
+  @teens {"десять", "одинадцять", "дванадцять", "тринадцять", "чотирнадцять", "п'ятнадцять",
+          "шістнадцять", "сімнадцять", "вісімнадцять", "дев'ятнадцять"}
+  @hundreds {"сто", "двісті", "триста", "чотириста", "п'ятсот", "шістсот", "сімсот", "вісімсот",
+             "дев'ятсот"}
 
   # TODO:
   #
@@ -16,11 +20,49 @@ defmodule StrictlySpeaking.Ua do
   # нонильйон
   # децильйон
   @bigs {
-    "тисяч",      "тисяча",   "тисячi",    "тисячi",    "тисячi",    "тисяч",      "тисяч",      "тисяч",      "тисяч",      "тисяч",
-    "мільйонів",  "мільйон",  "мільйони",  "мільйони",  "мільйони",  "мільйонів",  "мільйонів",  "мільйонів",  "мільйонів",  "мільйонів",
-    "мільярдів",  "мільярд",  "мільярди",  "мільярди",  "мільярди",  "мільярдів",  "мільярдів",  "мільярдів",  "мільярдів",  "мільярдів",
-    "трильйонів", "трильйон", "трильйони", "трильйони", "трильйони", "трильйонів", "трильйонів", "трильйонів", "трильйонів", "трильйонів"
+    "тисяч",
+    "тисяча",
+    "тисячi",
+    "тисячi",
+    "тисячi",
+    "тисяч",
+    "тисяч",
+    "тисяч",
+    "тисяч",
+    "тисяч",
+    "мільйонів",
+    "мільйон",
+    "мільйони",
+    "мільйони",
+    "мільйони",
+    "мільйонів",
+    "мільйонів",
+    "мільйонів",
+    "мільйонів",
+    "мільйонів",
+    "мільярдів",
+    "мільярд",
+    "мільярди",
+    "мільярди",
+    "мільярди",
+    "мільярдів",
+    "мільярдів",
+    "мільярдів",
+    "мільярдів",
+    "мільярдів",
+    "трильйонів",
+    "трильйон",
+    "трильйони",
+    "трильйони",
+    "трильйони",
+    "трильйонів",
+    "трильйонів",
+    "трильйонів",
+    "трильйонів",
+    "трильйонів"
   }
+
+  # mix format: on
 
   @doc """
   Accepts an integer. Returns a string containing human-readable representation of given number.
@@ -72,7 +114,7 @@ defmodule StrictlySpeaking.Ua do
       "сто двадцять тисяч"
 
   """
-  def say(number, acc \\ << >>, order \\ 0)
+  def say(number, acc \\ <<>>, order \\ 0)
 
   def say(0, _acc, _order), do: elem(@singles_m, 0)
 
@@ -85,34 +127,74 @@ defmodule StrictlySpeaking.Ua do
 
     result =
       case {order, div100, div10, rem10} do
-        {_, 0, 0, 0} -> << >>
-        {0, 0, 0, s} -> << elem(sex, s)::binary >>
-        {0, 0, 1, s} -> << elem(@teens, s)::binary >>
-        {0, 0, t, 0} -> << elem(@tens, t - 2)::binary >>
-        {0, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary >>
+        {_, 0, 0, 0} ->
+          <<>>
 
-        {0, h, 0, 0} -> << elem(@hundreds, h - 1)::binary >>
-        {0, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary >>
-        {0, h, 1, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary >>
-        {0, h, t, 0} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary >>
-        {0, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary >>
+        {0, 0, 0, s} ->
+          <<elem(sex, s)::binary>>
 
-        {o, 0, 0, s} -> << elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
-        {o, 0, 1, s} -> << elem(@teens, s)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, 0, t, 0} -> << elem(@tens, t - 2)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
+        {0, 0, 1, s} ->
+          <<elem(@teens, s)::binary>>
 
-        {o, h, 0, 0} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
-        {o, h, 1, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, h, t, 0} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
+        {0, 0, t, 0} ->
+          <<elem(@tens, t - 2)::binary>>
+
+        {0, 0, t, s} ->
+          <<elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary>>
+
+        {0, h, 0, 0} ->
+          <<elem(@hundreds, h - 1)::binary>>
+
+        {0, h, 0, s} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary>>
+
+        {0, h, 1, s} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary>>
+
+        {0, h, t, 0} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary>>
+
+        {0, h, t, s} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s,
+            elem(sex, s)::binary>>
+
+        {o, 0, 0, s} ->
+          <<elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary>>
+
+        {o, 0, 1, s} ->
+          <<elem(@teens, s)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary>>
+
+        {o, 0, t, 0} ->
+          <<elem(@tens, t - 2)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary>>
+
+        {o, 0, t, s} ->
+          <<elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary, ?\s,
+            elem(@bigs, 10 * (o - 1) + s)::binary>>
+
+        {o, h, 0, 0} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary>>
+
+        {o, h, 0, s} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary, ?\s,
+            elem(@bigs, 10 * (o - 1) + s)::binary>>
+
+        {o, h, 1, s} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary, ?\s,
+            elem(@bigs, 10 * (o - 1))::binary>>
+
+        {o, h, t, 0} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s,
+            elem(@bigs, 10 * (o - 1))::binary>>
+
+        {o, h, t, s} ->
+          <<elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s,
+            elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary>>
       end
 
     case {result, div1000} do
-      {<< >>,  div1000} -> say(div1000, acc, order + 1)
-      {result,       0} -> << result::binary, acc::binary >>
-      {result, div1000} -> say(div1000, << ?\s, result::binary, acc::binary >>, order + 1)
+      {<<>>, div1000} -> say(div1000, acc, order + 1)
+      {result, 0} -> <<result::binary, acc::binary>>
+      {result, div1000} -> say(div1000, <<?\s, result::binary, acc::binary>>, order + 1)
     end
   end
 end
