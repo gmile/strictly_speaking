@@ -1,7 +1,7 @@
 defmodule StrictlySpeaking.En do
   @singles {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 
-  @tens {"twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"}
+  @tens {"twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"}
   @teens {"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"}
 
   @bigs {"thousand", "million", "billion", "trillion"}
