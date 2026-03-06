@@ -1,10 +1,55 @@
 defmodule StrictlySpeaking.En do
+  # mix format: off
   @singles {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
-
-  @tens {"twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"}
-  @teens {"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"}
-
+  @tens {"twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"}
+  @teens {"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen",
+          "eighteen", "nineteen"}
   @bigs {"thousand", "million", "billion", "trillion"}
+  # mix format: on
+
+  @table (for n <- 0..999 do
+            h = div(n, 100)
+            r = rem(n, 100)
+            t = div(r, 10)
+            s = rem(r, 10)
+
+            singles = @singles
+            tens = @tens
+            teens = @teens
+
+            case {h, t, s} do
+              {0, 0, 0} ->
+                ""
+
+              {0, 0, s} ->
+                elem(singles, s)
+
+              {0, 1, s} ->
+                elem(teens, s)
+
+              {0, t, 0} ->
+                elem(tens, t - 2)
+
+              {0, t, s} ->
+                "#{elem(tens, t - 2)} #{elem(singles, s)}"
+
+              {h, 0, 0} ->
+                "#{elem(singles, h)} hundred"
+
+              {h, 0, s} ->
+                "#{elem(singles, h)} hundred and #{elem(singles, s)}"
+
+              {h, 1, s} ->
+                "#{elem(singles, h)} hundred and #{elem(teens, s)}"
+
+              {h, t, 0} ->
+                "#{elem(singles, h)} hundred and #{elem(tens, t - 2)}"
+
+              {h, t, s} ->
+                "#{elem(singles, h)} hundred and #{elem(tens, t - 2)} #{elem(singles, s)}"
+            end
+          end)
+         |> List.to_tuple()
 
   @doc """
   Accepts an integer. Returns a string containing human-readable representation of given number.
@@ -55,43 +100,42 @@ defmodule StrictlySpeaking.En do
       iex> StrictlySpeaking.En.say(117_227)
       "one hundred and seventeen thousand two hundred and twenty seven"
 
+      iex> StrictlySpeaking.En.say(20)
+      "twenty"
+
+      iex> StrictlySpeaking.En.say(80)
+      "eighty"
+
+      iex> StrictlySpeaking.En.say(120)
+      "one hundred and twenty"
+
+      iex> StrictlySpeaking.En.say(9_880)
+      "nine thousand eight hundred and eighty"
+
+      iex> StrictlySpeaking.En.say(20_000)
+      "twenty thousand"
+
+      iex> StrictlySpeaking.En.say(120_000)
+      "one hundred and twenty thousand"
+
   """
-  def say(number, acc \\ << >>, order \\ 0)
+  def say(0), do: "zero"
+  def say(number) when is_integer(number) and number > 0, do: do_say(number, <<>>, 0)
 
-  def say(0, _acc, _order), do: elem(@singles, 0)
+  defp do_say(0, acc, _order), do: acc
 
-  def say(number, acc, order) when number > 0 do
-    {div1000, rem1000} = {div(number, 1000), rem(number, 1000)}
-    {div100, rem100} = {div(rem1000, 100), rem(rem1000, 100)}
-    {div10, rem10} = {div(rem100, 10), rem(rem100, 10)}
+  defp do_say(number, acc, order) do
+    rest = div(number, 1000)
+    group = elem(@table, rem(number, 1000))
 
-    result =
-      case {order, div100, div10, rem10} do
-        {_, 0, 0, 0} -> << >>
-        {0, 0, 0, s} -> << elem(@singles, s)::binary >>
-        {0, 0, 1, s} -> << elem(@teens, s)::binary >>
-        {0, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary >>
-
-        {0, h, 0, 0} -> << elem(@singles, h)::binary, ?\s, "hundred" >>
-        {0, h, 0, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@singles, s)::binary >>
-        {0, h, 1, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@teens, s)::binary >>
-        {0, h, t, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary >>
-
-        {o, 0, 0, s} -> << elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, 0, 1, s} -> << elem(@teens, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, 0, t, s} -> << elem(@tens, t - 1)::binary, ?\s, elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-
-        {o, h, 0, 0} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, elem(@bigs, o - 1)::binary >>
-        {o, h, 0, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, h, 1, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@teens, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
-        {o, h, t, s} -> << elem(@singles, h)::binary, ?\s, "hundred", ?\s, "and", ?\s, elem(@tens, t - 2)::binary, ?\s, elem(@singles, s)::binary, ?\s, elem(@bigs, o - 1)::binary >>
+    new_acc =
+      case {group, order, acc} do
+        {"", _, _} -> acc
+        {g, 0, _} -> g
+        {g, o, <<>>} -> <<g::binary, " ", elem(@bigs, o - 1)::binary>>
+        {g, o, _} -> <<g::binary, " ", elem(@bigs, o - 1)::binary, " ", acc::binary>>
       end
 
-    case {result, div1000} do
-      {<< >>,  div1000} -> say(div1000, acc, order + 1)
-      {result,       0} -> << result::binary, acc::binary >>
-      {result, div1000} -> say(div1000, << ?\s, result::binary, acc::binary >>, order + 1)
-    end
+    do_say(rest, new_acc, order + 1)
   end
 end
-

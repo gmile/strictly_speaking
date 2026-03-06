@@ -27,6 +27,9 @@ defmodule StrictlySpeaking do
   def say(number, :en) when is_integer(number), do: StrictlySpeaking.En.say(number)
   def say(number, :ua) when is_integer(number), do: StrictlySpeaking.Ua.say(number)
 
-  def say(number, language) when is_integer(number), do: raise(ArgumentError, "Language '#{language}' is not implemented")
-  def say(number, _language), do: raise(ArgumentError, "Number must be an integer. Found: #{number}")
+  def say(number, language) when is_integer(number),
+    do: raise(ArgumentError, "Language '#{language}' is not implemented")
+
+  def say(number, _language),
+    do: raise(ArgumentError, "Number must be an integer. Found: #{number}")
 end
