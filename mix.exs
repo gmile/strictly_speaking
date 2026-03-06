@@ -7,7 +7,7 @@ defmodule StrictlySpeaking.MixProject do
     [
       app: :strictly_speaking,
       version: @version,
-      elixir: "~> 1.18",
+      elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
