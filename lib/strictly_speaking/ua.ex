@@ -53,6 +53,24 @@ defmodule StrictlySpeaking.Ua do
       iex> StrictlySpeaking.Ua.say(123_456_789)
       "сто двадцять три мільйони чотириста п'ятдесят шість тисяч сімсот вісімдесят дев'ять"
 
+      iex> StrictlySpeaking.Ua.say(20)
+      "двадцять"
+
+      iex> StrictlySpeaking.Ua.say(80)
+      "вісімдесят"
+
+      iex> StrictlySpeaking.Ua.say(120)
+      "сто двадцять"
+
+      iex> StrictlySpeaking.Ua.say(9_880)
+      "дев'ять тисяч вісімсот вісімдесят"
+
+      iex> StrictlySpeaking.Ua.say(20_000)
+      "двадцять тисяч"
+
+      iex> StrictlySpeaking.Ua.say(120_000)
+      "сто двадцять тисяч"
+
   """
   def say(number, acc \\ << >>, order \\ 0)
 
@@ -70,20 +88,24 @@ defmodule StrictlySpeaking.Ua do
         {_, 0, 0, 0} -> << >>
         {0, 0, 0, s} -> << elem(sex, s)::binary >>
         {0, 0, 1, s} -> << elem(@teens, s)::binary >>
+        {0, 0, t, 0} -> << elem(@tens, t - 2)::binary >>
         {0, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary >>
 
         {0, h, 0, 0} -> << elem(@hundreds, h - 1)::binary >>
         {0, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary >>
         {0, h, 1, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary >>
+        {0, h, t, 0} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary >>
         {0, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary >>
 
         {o, 0, 0, s} -> << elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
         {o, 0, 1, s} -> << elem(@teens, s)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
-        {o, 0, t, s} -> << elem(@tens, t - 1)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
+        {o, 0, t, 0} -> << elem(@tens, t - 2)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
+        {o, 0, t, s} -> << elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
 
         {o, h, 0, 0} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
         {o, h, 0, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
         {o, h, 1, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@teens, s)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
+        {o, h, t, 0} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(@bigs, 10 * (o - 1))::binary >>
         {o, h, t, s} -> << elem(@hundreds, h - 1)::binary, ?\s, elem(@tens, t - 2)::binary, ?\s, elem(sex, s)::binary, ?\s, elem(@bigs, 10 * (o - 1) + s)::binary >>
       end
 
